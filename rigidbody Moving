@@ -1,0 +1,35 @@
+publi class namespace : MonoBehaviour
+{//움직이는데 필요한 변수들
+    bool isHorionMove;
+    float h;
+    float v;
+
+    public float speed;
+    private Rigidbody2D myRigidbody;
+
+    void Awake(){
+        myRigidbody=GetComponent<Rigidbody2D>();
+    }
+    //버튼 눌렀을때 움직이는 설정
+    void update()
+    {
+        h=Input.GetAxisRaw("Horizontal");
+        v=Input.GetAxisRaw("Vertical");
+        bool hDown=Input.GetAxisRaw("Horizontal");
+        bool vDown=Input.GetAxisRaw("Vertical");
+        bool hUp=Input.GetAxisRaw("Horizontal");
+        bool vUp=Input.GetAxisRaw("Vertical");
+
+        if(hDown||vUp)
+        isHorionMove=true;
+        else if(vDown||hUp)
+        isHorizonMove=false;
+    }
+    //움직이는 코드
+    void FixedUpdate(){
+        Vector2 moveVec=isHorionMove? new vector2(h,0):new Vector2(0,V);
+        myRigidbody.Velocity=moveVec*speed;
+    }
+
+    }
+}
