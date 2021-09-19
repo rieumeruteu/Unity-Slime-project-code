@@ -1,35 +1,45 @@
-publi class namespace : MonoBehaviour
-{//움직이는데 필요한 변수들
-    bool isHorionMove;
+public class MovingObject: MonoBehaviour{
+    bool isHorizonMove;
+    private Animator animator;
     float h;
-    float v;
+    float y;
+    public float speed;//이동속도 변수 추가
+    private Rigidbody2D myRigidbody;//리지드 바디를 추가
 
-    public float speed;
-    private Rigidbody2D myRigidbody;
+    void start(){
 
-    void Awake(){
-        myRigidbody=GetComponent<Rigidbody2D>();
-    }
-    //버튼 눌렀을때 움직이는 설정
-    void update()
-    {
-        h=Input.GetAxisRaw("Horizontal");
-        v=Input.GetAxisRaw("Vertical");
-        bool hDown=Input.GetAxisRaw("Horizontal");
-        bool vDown=Input.GetAxisRaw("Vertical");
-        bool hUp=Input.GetAxisRaw("Horizontal");
-        bool vUp=Input.GetAxisRaw("Vertical");
-
-        if(hDown||vUp)
-        isHorionMove=true;
-        else if(vDown||hUp)
-        isHorizonMove=false;
-    }
-    //움직이는 코드
-    void FixedUpdate(){
-        Vector2 moveVec=isHorionMove? new vector2(h,0):new Vector2(0,V);
-        myRigidbody.Velocity=moveVec*speed;
+        animator=GetComponent<Animator>();
+        
     }
 
-    }
+        void Update(){
+            //움직임 값 
+            h=Input.GetAxisRaw("Horizontal");
+            v=Input.GetAxisRaw("Vertical");
+            bool hDown=Input.GetButtonDown("Horizontal");
+            bool vDown=Input.GetButtonDown("Vertical");
+            bool hUp=Input.GetButtonUp("Horizontal");
+            bool vUp=Input.GetButtonUp("Vertical");
+
+            //int로 Animator의 Parameter를 정했으면 GetInteger float면 Setfloat 로 정하기
+            if(animator.GetInteger("MovingX")!=h){
+            animator.SetBool("Change",true);// Parameter에 "change"를 넣어서 멈추는 모션과 이동하는 모션 구분 
+            animator.SetInteger("MovingX",(int)h);
+            }
+            else if(animator.GetInteger("MovingY")!=y){
+            animator.SetBool("Change",true);
+            animator.SetInteger("MovingY",(int)y);
+            }
+            else
+            {
+                animator.setBool("Change",false);
+            }
+        }
+
+        void FixedUpdate(){//움직이는 방향 및 속도를 정해준다.
+            Vector2 moveVec=isHorizonMove? new Vector2(h,0):new Vector2(0,v);
+            myRigidbody.Velocity=moveVec*speed;
+
+        }
+    
 }
