@@ -1,0 +1,64 @@
+public class CameraManager : MonoBehaviour
+{
+    public BoxCollider2D bound;//bound라는 오브젝트를 생성, boxcollider2d 생성 
+    public Vector3 minBound;
+    public Vector3 maxBound;
+    private float halfwidth;//카메라의 반너비 값을 지닐 변수
+    private float halfHeight;//카메라의 반높이 값,,
+
+    private Camera theCamera;
+
+
+    void Awake()
+    {
+        //start에 있던 내용들 Awake로 옮길것
+    }
+    
+    void start()
+    {
+        theCamera=GetComponent<Camera>();
+        minBound=bound.bounds.min;//bound가 감싸는 최대,최솟값 지정
+        maxBound=bound.bounds.max;
+        //bound는 오브젝트 명 , bounds는 bound의 범위, 최소or최댓값
+        
+        halfHight=theCamera.orthographicSize;//Camera 컴포넌트의 size 값
+        halfwidth=halfHeight*Screen.width/Screen.height;//반너비 구하는 공식
+        //해상도 너비/높이*반높이=반너비
+
+    }
+
+    void update()
+    {
+        float clampedX=Mathf.Clamp(this.transform.position.x,minBound.x+halfwidth,maxBound.x-halfwidth);
+        float clampedY=Mathf.Clamp(ths.transform.positioon.y,minBound.y+halfHeight,maxBound.y-halfHeight);
+
+        this.transform.position=new vector3(clampedX,clampedY,this.transform.position.z);
+        //Mathf.Clamp는 최대,최솟값 사이에 float값이 value범위 내에 있도록 한다.
+        //한마디로 카매라가 bound의 boxcollider의 범위 안에 있도록 한다 
+    }
+
+    //맵 이동시 다른 bound로 이동 
+    public void SetBound(BoxCollider2D newBound)
+    {
+        bound=newBound;
+        minBound=bound.bounds.min;
+        maxBound=bound.bounds.max;
+    }
+
+}
+
+
+//이동한 맵의 바운드 
+
+public class transferMap : MonoBehaviour
+{
+    public BoxCollider2D targetBound; //전이 
+
+
+
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        theCamera.SetBound(targetBound);//맵 전이 함수가 있을 시 거기다 넣기
+    }
+}
