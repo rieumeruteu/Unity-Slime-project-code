@@ -1,0 +1,83 @@
+//리지드 바디에 Use Auto Mass를 클릭해 주고 중력 0으로 해야 작동한다
+
+public class NpcRandomMoving : MonoBehaviour
+{
+    public float speed;
+    public Rigidbody2D myRigidbody;
+    public bool Walking;
+
+   
+
+    public float WalkTime;
+    private float WalkCounter;
+    public float WaitTime;
+    private float WaitCounter;
+    private int WalkDirection;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        myRigidbody=GetComponent<Rigidbody2D>();
+
+        WalkCounter=WalkTime;
+        WaitCounter=WaitTime;
+
+        ChooseDirection();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if(Walking)
+        {
+            WalkCounter-=Time.deltaTime;
+            if(WalkCounter<0)
+            {
+                Walking=false;
+                WaitCounter=WaitTime;
+
+            }
+           
+           switch(WalkDirection)
+           {
+               case 0:
+               myRigidbody.velocity=new Vector2(0,speed);
+               break;
+
+               case 1:
+               myRigidbody.velocity=new Vector2(speed,0);
+               break;
+
+               case 2:
+               myRigidbody.velocity=new Vector2(0,-speed);
+               break;
+
+               case 3:
+               myRigidbody.velocity=new Vector2(-speed,0);
+               break;
+
+    
+
+           }
+        }
+        else
+        {
+            WaitCounter-=Time.deltaTime;
+
+            myRigidbody.velocity=Vector2.zero;
+
+            if(WaitCounter<0)
+            {
+                ChooseDirection();
+            }
+        }
+    }
+    public void ChooseDirection()
+    {
+        WalkDirection= Random.Range(0,4);
+        Walking=true;
+        WalkCounter=WalkTime;
+
+
+    }
+}
