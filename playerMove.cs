@@ -5,57 +5,51 @@ using UnityEngine.UI;
 
 public class playerMove : MonoBehaviour
 {
-    public float JumpPower;
-    float distanceScore;//거리 점수
-
-    public Text ScoreTxt;// 점수텍스트
-
+    bool Jump = false;
+    bool Top = false;
     [SerializeField]
-    bool isGround = false;
-    bool isAlive = true;//생존
+    float jumpHeight = 0;
+    [SerializeField]
+    float jumpSpeed = 0;
 
-    Rigidbody2D RB;
+    Vector2 startPosition;
+    Animator animator;
 
-    private void Awake()
+    private void Start()
     {
-        RB = GetComponent<Rigidbody2D>();
-        distanceScore = 0;
+        startPosition = transform.position;
+        animator = GetComponent<Animator>();
     }
 
-    void Update()
+    private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        animator.SetBool("Move", true);
+
+        if(Input.GetMouseButtonDown(0))
         {
-            if(isGround==true)
+            Jump = true;
+        }
+        else if(transform.position.y<=startPosition.y)
+        {
+            Jump = false;
+            Top = false;
+            transform.position = startPosition;
+        }
+
+        if(Jump)
+        {
+            if(transform.position.y<=jumpHeight-0.1f&&!Top)
             {
-                RB.AddForce(Vector2.up * JumpPower);
-                isGround = false;
-
+                transform.position = Vector2.Lerp(transform.position, new Vector2(transform.position.x, jumpHeight), jumpSpeed * Time.deltaTime);
             }
-        }
-
-        if(isAlive)
-        {
-            distanceScore += Time.deltaTime * 4;
-            ScoreTxt.text = "점수: " + distanceScore.ToString();
-        }
-
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(collision.gameObject.CompareTag("ground"))
-        {
-            if(isGround==false)
+            else
             {
-                isGround = true;
+                Top = true;
             }
-        }
-
-        if (collision.gameObject.CompareTag("Monster"))
-        {
-            isAlive = false;
-            Time.timeScale = 0;// 죽으면 일시정지 
+            if(transform.position.y> startPosition.y&&Top)
+            {
+                transform.position = Vector2.MoveTowards(transform.position, startPosition, jumpSpeed * Time.deltaTime);
+            }
         }
     }
 }

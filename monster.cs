@@ -4,23 +4,16 @@ using UnityEngine;
 
 public class monster : MonoBehaviour
 {
-    public mosterGenerate Monster;
-    
-    void Update()
+    [SerializeField]
+    float speed = 0;
+
+    private void Start()
     {
-        transform.Translate(Vector2.left * Monster.CurrentSpeed * Time.deltaTime);
+        
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void Update()
     {
-        if(collision.gameObject.CompareTag("next Line"))
-        {
-            Monster.GenerateSequence();
-        }
-
-        if(collision.gameObject.CompareTag("end"))
-        {
-            Destroy(this.gameObject);
-        }
+        transform.Translate(new Vector2(-3, 0) * Time.deltaTime * speed);
     }
 }
